@@ -1,0 +1,26 @@
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todos</title>
+</head>
+
+<body>
+  <div class="row">
+    {{> tables}}
+  </div>
+</body>
+
+<template name="tables">
+  <h3>Tables</h3>
+  <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+    {{#each tables}}
+      <li><button class="button">{{name}}</button></li>
+  {{/each}}
+  </ul>
+  <div id="createtable">
+    <input type="text" id="new-table" placeholder="Add table" />
+  </div>
+</template>
+
+<template name="table">
+</template> 
