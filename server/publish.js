@@ -10,9 +10,14 @@ Meteor.publish('tables', function () {
 // Orders
 Orders = new Meteor.Collection('orders');
 
-Meteor.publish('orders', function (table_id) {
-  check(table_id, String);
-  return Orders.find({table_id: table_id});
+Orders.allow({
+      insert: function(userId, doc) {   
+         doc.created = new Date().valueOf();   
+         return true; 
+      }}); 
+
+Meteor.publish('orders', function () {
+  return Orders.find({});
 });
 
 //Items
@@ -26,5 +31,6 @@ Meteor.publish('items', function () {
 OrderedItems = new Meteor.Collection('orderedItems');
 
 Meteor.publish('orderedItems', function(order_id) {
+    check(order_id, String);
     return OrderedItems.find({order_id: order_id});
 });

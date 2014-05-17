@@ -27,3 +27,11 @@ activateInput = function (input) {
   input.focus();
   input.select();
 };
+
+Handlebars.registerHelper("moment", function(timestamp) {
+        return moment(new Date(timestamp)).fromNow();
+});
+
+Handlebars.registerHelper("prettifyDate", function(timestamp) {
+        return new Date(timestamp).toString('yyyy-MM-dd')
+});
