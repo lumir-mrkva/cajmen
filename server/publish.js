@@ -14,6 +14,9 @@ Orders.allow({
       insert: function(userId, doc) {   
          doc.created = new Date().valueOf();   
          return true; 
+      },
+      remove: function() {
+          return true;
       }}); 
 
 Meteor.publish('orders', function () {

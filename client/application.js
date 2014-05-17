@@ -71,6 +71,10 @@ Template.order.events = {
              OrderedItems.update(item._id, {$set: {printed: true}});
         });
         console.log(printItems);
+    },
+    'click #removeOrder': function removeOrder() {
+        Orders.remove(this.order._id);
+        Router.go('table', {_id: this.order.table_id)};
     }
 };
 
