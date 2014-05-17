@@ -52,14 +52,14 @@
 {{#each items}}
 <div class="row">
     <div class="small-8 columns">{{name}}</div>
-    <div class="small-2 columns">{{price}}</div>
-    <div class="small-2 columns"><button id="delete" class="button alert postfix">X</button></div>
+    <div class="small-2 columns text-right">{{price}}</div>
+    <div class="small-2 columns"><button id="delete" class="button alert postfix"><i class="fi-x"></i></button></div>
 </div>  
 {{/each}}
 <div id="additem" class="row">
     <div class="small-7 columns"><input type="text" id="name" placeholder="name" /></div>
     <div class="small-3 columns"><input type="number" id="price" placeholder="price" /></div>
-    <div class="small-2 columns"><button class="button postfix success" id="add">+</button></div>
+    <div class="small-2 columns"><button class="button postfix success" id="add"><i class="fi-plus"></i></button></div>
 </div>  
 </template>
 
@@ -70,8 +70,8 @@
     {{#each items}}
          <div class="row">
             <div class="small-8 columns">{{name}}</div>
-            <div class="small-2 columns">{{price}}</div>
-            <div class="small-2 columns"><button id="add" class="button success postfix">+</button></div>
+            <div class="small-2 columns text-right">{{price}}</div>
+            <div class="small-2 columns"><button id="add" class="button success postfix"><i class="fi-plus"></i></button></div>
          </div>
     {{/each}}
     <hr/>
@@ -82,8 +82,18 @@
     {{#each ordered}}
          <div class="row">
             <div class="small-8 columns">{{item.name}}</div>
-            <div class="small-2 columns">{{item.price}}</div>
-            <div class="small-2 columns"><button id="remove" class="button alert postfix">-</button></div>
+            <div class="small-2 columns text-right">{{item.price}}</div>
+            <div class="small-2 columns">
+                {{#if printed}}
+                    <button id="disabled" class="button disabled sucess postfix"><i class="fi-print"></i></button>
+                {{else}}
+                    <button id="remove" class="button alert postfix"><i class="fi-minus"></i></button>
+                {{/if}}
+            </div>
          </div>
     {{/each}}
+    <div class="row">
+        <div class="small-6 columns"><button id="print" class="button">Print</button></div>
+        <div class="small-6 columns text-right"><button id="remove" class="button">Remove</button></div>
+    </div>
 </template>

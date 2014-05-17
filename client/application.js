@@ -64,6 +64,13 @@ Template.order.events = {
     },
     'click #remove': function removeItem() {
         OrderedItems.remove(this._id); 
+    },
+    'click #print': function printOrder() {
+        var printItems = OrderedItems.find({order_id: this.order._id, printed: {$ne: true}});
+        printItems.forEach(function (item) {
+             OrderedItems.update(item._id, {$set: {printed: true}});
+        });
+        console.log(printItems);
     }
 };
 
@@ -95,7 +102,7 @@ Router.map(function() {
             },
         data: function() {
             var items = Items.find({});
-            var orderedItems = OrderedItems.find({order_id: this.params._id});
+            var orderedItems = OrderedItems.find({order_id: this.params._id}, {sort: {created: -1}});
             return { order: Orders.findOne(this.params._id), items: items, ordered: orderedItems };
             }
         });

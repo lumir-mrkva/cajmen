@@ -30,6 +30,18 @@ Meteor.publish('items', function () {
 //OrderedItems
 OrderedItems = new Meteor.Collection('orderedItems');
 
+OrderedItems.allow({
+      insert: function(userId, doc) {   
+         doc.created = new Date().valueOf();   
+         return true; 
+      },
+      update: function() {
+          return true;
+      },
+      remove: function() {
+          return true;
+      }}); 
+
 Meteor.publish('orderedItems', function(order_id) {
     check(order_id, String);
     return OrderedItems.find({order_id: order_id});
