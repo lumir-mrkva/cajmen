@@ -74,7 +74,7 @@ Template.order.events = {
     },
     'click #removeOrder': function removeOrder() {
         Orders.remove(this.order._id);
-        Router.go('table', {_id: this.order.table_id};
+        Router.go('table', {_id: this.order.table_id});
     }
 };
 
