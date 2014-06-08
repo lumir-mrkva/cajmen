@@ -52,60 +52,6 @@
 </div>
 </template> 
 
-<template name="items">
-    <div class="row">
-        <h3 class="small-12 columns">Items</h3>
-    </div>
-    <div class="row">
-        <div class="small-6 medium-3 columns">
-            <label>Currency</label>
-            <input type="text" id="currency" value="{{menu.currency}}">
-        </div>
-         <div class="small-6 medium-3 columns">
-             <div class="row collapse">
-                 <label>VAT</label>
-                 <div class="small-9 columns"><input type="text" id="vat"
-                     value={{menu.vat}}></div>
-                 <div class="small-3 columns"><span class="postfix">%</span></div>
-             </div>
-        </div>
-        <div class="small-6 medium-3 columns">
-            <label>&nbsp;</label>
-            <button class="button postfix" id="save">save</button>
-        </div>
-        <div class="small-6 medium-3 columns">
-            <label>&nbsp;</label>
-            <button class="button secondary postfix" id="clone">clone</button>
-        </div>
-   </div>
-    <hr/>
-    {{#each items}}
-    <div class="row">
-        <div class="small-8 columns">{{name}}</div>
-        <div class="small-2 columns text-right">{{price}} {{currency}}</div>
-        <div class="small-2 columns">
-            <button id="delete" class="button alert postfix"><i class="fi-x"></i></button>
-        </div>
-    </div>  
-    {{/each}}
-    <div id="additem" class="row">
-        <div class="small-7 columns"><input type="text" id="name" placeholder="name" /></div>
-        <div class="small-3 columns">
-            <div class="row collapse">
-                <div class="small-9 columns">
-                    <input type="number" id="price" />
-                </div>
-                <div class="small-3 columns">
-                    <span class="postfix">{{menu.currency}}</span>
-                </div>
-            </div>
-        </div>
-        <div class="small-2 columns">
-            <button class="button postfix success" id="add"><i class="fi-plus"></i></button>
-        </div>
-    </div>  
-</template>
-
 <template name="order">
     <div class="row">
         <h3 class="small-12 columns">
@@ -180,4 +126,90 @@
         <a class="button secondary postfix" href="{{pathFor 'items'}}">Items</a>
     </div>
   </div>
+</template>
+
+<template name="items">
+    <div class="row">
+        <h3 class="small-12 columns">Items</h3>
+    </div>
+    <div class="row">
+        <div class="small-6 medium-3 columns">
+            <label>Currency</label>
+            <input type="text" id="currency" value="{{menu.currency}}">
+        </div>
+         <div class="small-6 medium-3 columns">
+             <div class="row collapse">
+                 <label>VAT</label>
+                 <div class="small-9 columns"><input type="text" id="vat"
+                     value={{menu.vat}}></div>
+                 <div class="small-3 columns"><span class="postfix">%</span></div>
+             </div>
+        </div>
+        <div class="small-6 medium-3 columns">
+            <label>&nbsp;</label>
+            <button class="button postfix" id="save">save</button>
+        </div>
+        <div class="small-6 medium-3 columns">
+            <label>&nbsp;</label>
+            <button class="button secondary postfix" id="clone">clone</button>
+        </div>
+   </div>
+    <hr/>
+    {{#each items}}
+    <div class="row">
+        <div class="small-7 columns">
+            {{name}}
+            {{#each flavours}}
+                <span class="label">{{.}}</span>
+            {{/each}}
+            <a href={{pathFor 'item'}}><i id="expand" class="fi-plus"></i></a>
+        </div>
+        <div class="small-3 columns text-right">{{price}} {{currency}}</div>
+        <div class="small-2 columns">
+            <button id="delete" class="button alert postfix"><i class="fi-x"></i></button>
+        </div>
+    </div>  
+    {{/each}}
+    <div id="additem" class="row">
+        <div class="small-7 columns"><input type="text" id="name" placeholder="name" /></div>
+        <div class="small-3 columns">
+            <div class="row collapse">
+                <div class="small-9 columns">
+                    <input type="number" id="price" />
+                </div>
+                <div class="small-3 columns">
+                    <span class="postfix">{{menu.currency}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="small-2 columns">
+            <button class="button postfix success" id="add"><i class="fi-plus"></i></button>
+        </div>
+    </div>  
+</template>
+
+<template name="item">
+    <div class="row">
+        <h3 class="small-12 columns">Flavours of {{name}}</h3>
+    </div>
+    <div class="row">
+    <div class="small-12 columns">
+    <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+        {{#each flavours}}
+            <li><a class="button small-8 secondary columns">{{.}}</a>
+            <a class="button small-4 columns" id="remove">x</a></li>
+        {{/each}}
+    </ul>
+  </div> 
+  </div>
+    <div class="row">
+  <div class="small-12 columns">
+    <div class="row collapse">
+        <div class="small-8 columns"><input type="text" id="flavour"
+            placeholder="flavour"></div>
+        <div class="small-4 columns"><button id="add"
+                class="button postfix">Add</button></div>
+    </div>
+</div>
+</div>
 </template>

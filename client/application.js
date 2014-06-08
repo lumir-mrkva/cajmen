@@ -39,6 +39,15 @@ Template.items.events = {
     }
 };
 
+Template.item.events = {
+    'click #add': function() {
+        Items.update(this._id, {$push: {flavours: $('#flavour').val()}});
+    },
+    'click #remove': function(e, template) {
+        Items.update(template.data._id, {$pull: {flavours: this+""}});
+    }
+}
+
 // Table
 Template.table.events = {
     'click #new': function(){newOrder(this.table)}, 
@@ -127,6 +136,15 @@ Router.map(function() {
                 menu: menu,
                 items: Items.find()
             }
+        }
+    });
+    this.route('item', {
+        path: '/items/:_id',
+        waitOn: function() {
+            return Meteor.subscribe('items');
+        },
+        data: function() {
+            return Items.findOne(this.params._id);
         }
     });
     this.route('table', {
