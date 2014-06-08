@@ -10,9 +10,12 @@ Meteor.publish('tables', function () {
 // Orders
 Orders = new Meteor.Collection('orders');
 
+Orders.counter = 0;
+
 Orders.allow({
       insert: function(userId, doc) {   
          doc.created = new Date().valueOf();   
+         doc.number = ++Orders.counter;
          return true; 
       },
       remove: function() {
@@ -21,6 +24,13 @@ Orders.allow({
 
 Meteor.publish('orders', function () {
   return Orders.find({});
+});
+
+//Menus
+Menus = new Meteor.Collection('menus');
+
+Meteor.publish('menus', function() {
+    return Menus.find({});
 });
 
 //Items
@@ -48,4 +58,21 @@ OrderedItems.allow({
 Meteor.publish('orderedItems', function(order_id) {
     check(order_id, String);
     return OrderedItems.find({order_id: order_id});
+});
+
+Meteor.methods({
+    printOrder: function(order) {
+        Orders.update(order._id, {$set: {printed: true}});
+        var items = OrderedItems.find({order_id: order._id});
+        var pb = new PrintBuilder;
+        pb.addLn('order #' + order.number, '(' + order._id + ')');
+        pb.addLn(' ', moment(order.created).format());
+        pb.hr();
+        items.forEach(function(item){
+            pb.addLn(item.item.name);
+        })
+        var s = pb.build();
+        console.log(s);
+        Star.print(s, true);
+    }
 });
