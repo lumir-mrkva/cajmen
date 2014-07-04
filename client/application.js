@@ -56,6 +56,9 @@ Template.table.events = {
             Tables.remove(this.table._id);
             Router.go('admin');
         }
+    },
+    'click #removeOrder': function removeOrder() {
+        if(confirm('Really remove order ' + this._id + '?')) Orders.remove(this._id);
     }
 };
 
@@ -96,7 +99,7 @@ Template.order.events = {
         console.log(printItems);
     },
     'click #removeOrder': function removeOrder() {
-        if(!this.printed) Orders.remove(this.order._id);
+        if(!this.order.printed) Orders.remove(this.order._id);
         Router.go('tables');
     },
     'click #ok': function ok() {
