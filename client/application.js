@@ -18,7 +18,7 @@ Template.tables.loading = function () {
 Template.tables.events = {
     'click #order': function tableOrder(e, template) {
         var order = Orders.findOne({table_id: this._id, printed: false});
-        if (!order) newOrder(this);
+        if (!order) newOrder(this, template.data.menu);
         else Router.go('order', {_id: order._id});
     }
 };
@@ -70,15 +70,18 @@ Template.admin.events = {
 
 // Orders
 
-function newOrder(table) {
-    var order = Orders.insert({table_id: table._id, printed: false});        
+function newOrder(table, menu) {
+    var order = Orders.insert({table_id: table._id, 
+        currency: menu.currency, vat: menu.vat, printed: false});        
     Router.go('order', {_id: order});
 };
 
 Template.order.events = {
     'click #add': function addItem(e, template) {
-        OrderedItems.insert({order_id: template.data.order._id, item: this });
-
+        var item = OrderedItems.insert({order_id: template.data.order._id, item: this });
+        if (this.flavours && this.flavours.length > 0) {
+            Router.go('flavours', {_id : item, order: template.data.order._id});
+        }
     },
     'click #remove': function removeItem() {
         OrderedItems.remove(this._id); 
@@ -94,6 +97,9 @@ Template.order.events = {
     },
     'click #removeOrder': function removeOrder() {
         if(!this.printed) Orders.remove(this.order._id);
+        Router.go('tables');
+    },
+    'click #ok': function ok() {
         Router.go('tables');
     }
 };
@@ -112,15 +118,25 @@ Template.order.sum = function() {
     return sum;
 };
 
+Template.flavours.events = {
+    'click #ok': function okFlavours() {
+        var flavours = $(':checked').map(function(){ return $(this).val();}).get();
+        OrderedItems.update(this.item._id, {$set: {"item.flavours": flavours}});
+        Router.go('order', {_id: this.order._id});
+    }
+}
+
 Router.map(function() {
     this.route('tables', {
         path: '/',
         waitOn: function() {
             Meteor.subscribe('orders');
             Meteor.subscribe('tables');
+            Meteor.subscribe('menus');
         },
         data: function() {
-            return { tables: Tables.find({}, {sort: {name: 1}}), orders: Orders.find({}) };
+            return { tables: Tables.find({}, {sort: {name: 1}}), orders: Orders.find({}), 
+                menu: Menus.findOne() };
         }
     });
     this.route('items', {
@@ -160,6 +176,7 @@ Router.map(function() {
     this.route('order', {
         path: '/order/:_id',
         waitOn: function() {
+            Meteor.subscribe('menus');
             Meteor.subscribe('orders');
             Meteor.subscribe('orderedItems', this.params._id);
             },
@@ -170,9 +187,20 @@ Router.map(function() {
                 {sort: {created: -1}}
                 );
             return { order: Orders.findOne(this.params._id), 
-                items: items, ordered: orderedItems };
+                items: items, ordered: orderedItems, menu: Menus.findOne() };
             }
         });
+    this.route('flavours', {
+        path: '/order/:order/item/:_id',
+        waitOn: function() {
+            Meteor.subscribe('orders');
+            Meteor.subscribe('orderedItems', this.params.order);
+        },
+        data: function() {
+            return { item: OrderedItems.findOne(this.params._id), 
+                order: Orders.findOne(this.params.order) };
+        }
+    })
     this.route('admin', {
         path: '/admin',
         waitOn: function() {

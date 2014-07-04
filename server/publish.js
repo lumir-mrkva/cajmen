@@ -69,7 +69,12 @@ Meteor.methods({
         pb.addLn(' ', moment(order.created).format());
         pb.hr();
         items.forEach(function(item){
-            pb.addLn(item.item.name);
+            var flavours = item.item.flavours;
+            var fl = '';
+            if (flavours) flavours.forEach(function(flavour) {
+                fl = fl + ' - ' + flavour;        
+            });
+            pb.addLn(item.item.name + fl);
         })
         var s = pb.build();
         console.log(s);
