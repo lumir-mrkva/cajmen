@@ -58,8 +58,11 @@
 
 <template name="order">
     <div class="row">
-        <h3 class="small-12 columns">
+        <h3 class="small-6 columns">
             Order {{order.number}}
+        </h3>
+        <h3 class="small-6 columns text-right">
+            Table {{table.name}}
         </h3>
     </div>
     {{#unless order.printed}}
@@ -252,4 +255,12 @@
     </div>
 </div>
 </div>
+</template>
+
+<template name="stats">
+{{#each items}}
+<div class="row">
+    {{_id}}
+</div>
+{{/each}}
 </template>

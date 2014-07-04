@@ -89,7 +89,7 @@ Template.order.events = {
     'click #remove': function removeItem() {
         OrderedItems.remove(this._id); 
     },
-    'click #print': function printOrder() {
+    'click #print': function printOrder(e, template) {
         if (this.order.printed) return;
         var printItems = OrderedItems.find({order_id: this.order._id, printed: {$ne: true}});
         printItems.forEach(function (item) {
@@ -182,6 +182,7 @@ Router.map(function() {
             Meteor.subscribe('menus');
             Meteor.subscribe('orders');
             Meteor.subscribe('orderedItems', this.params._id);
+            Meteor.subscribe('tables');
             },
         data: function() {
             var items = Items.find({});
@@ -189,8 +190,10 @@ Router.map(function() {
                 {order_id: this.params._id}, 
                 {sort: {created: -1}}
                 );
-            return { order: Orders.findOne(this.params._id), 
-                items: items, ordered: orderedItems, menu: Menus.findOne() };
+            var order = Orders.findOne(this.params._id);
+            return { order: order, table: Tables.findOne(order.table_id), 
+                items: items, ordered: orderedItems, menu: Menus.findOne(),
+            };
             }
         });
     this.route('flavours', {
@@ -213,6 +216,15 @@ Router.map(function() {
             return { tables: Tables.find({}, {sort: {name: 1}}) };
         }
     });
+    this.route('stats', {
+        path: '/stats',
+        waitOn: function() {
+            return Meteor.subscribe('orderedItems', null);
+        },
+        data: function() {
+            return { items: OrderedItems.find({printed: null}) };
+        }
+    })
 
 });
 

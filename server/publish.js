@@ -56,26 +56,37 @@ OrderedItems.allow({
       }}); 
 
 Meteor.publish('orderedItems', function(order_id) {
-    check(order_id, String);
-    return OrderedItems.find({order_id: order_id});
+    if (order_id) {
+        return OrderedItems.find({order_id: order_id});
+    } else {
+        return OrderedItems.find({});
+    }   
 });
 
 Meteor.methods({
     printOrder: function(order) {
         Orders.update(order._id, {$set: {printed: true}});
         var items = OrderedItems.find({order_id: order._id});
+        var table = Tables.findOne(order.table_id);
+        var total = 0;
         var pb = new PrintBuilder;
         pb.addLn('order #' + order.number, '(' + order._id + ')');
-        pb.addLn(' ', moment(order.created).format());
+        pb.addLn('table ' + table.name, moment(order.created).format());
         pb.hr();
         items.forEach(function(item){
             var flavours = item.item.flavours;
-            var fl = '';
-            if (flavours) flavours.forEach(function(flavour) {
-                fl = fl + ' - ' + flavour;        
-            });
-            pb.addLn(item.item.name + fl);
-        })
+            if (flavours) {
+                var fl = ' - ';
+                flavours.forEach(function(flavour) {
+                    fl = fl + flavour + ',';        
+                });
+            }
+            fl = fl.slice(0, -1);
+            pb.addLn(item.item.name + fl, ' ' + item.item.price + ',-');
+            total = total + parseFloat(item.item.price);
+        });
+        pb.hr();
+        pb.addLn('total sum', total + ',-');
         var s = pb.build();
         console.log(s);
         Star.print(s, true);
