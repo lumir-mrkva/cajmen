@@ -3,11 +3,13 @@ Orders = new Meteor.Collection("orders");
 Items = new Meteor.Collection('items');
 OrderedItems = new Meteor.Collection('orderedItems');
 Menus = new Meteor.Collection('menus');
+BestItems = new Meteor.Collection('bestItems');
 
 var tablesHandle = Meteor.subscribe('tables');
 var itemsHandle = Meteor.subscribe('items');
 var ordersHande = Meteor.subscribe('orders');
 var menusHandle = Meteor.subscribe('menus');
+var bestItems = Meteor.subscribe('bestItems');
 
 // Tables
 
@@ -129,6 +131,14 @@ Template.flavours.events = {
     }
 }
 
+Template.stats.totalRenevue = function() {
+    var sum = 0;
+    BestItems.find().forEach(function (item) {
+        sum = sum + parseFloat(item.renevue);
+    });
+    return sum;
+}
+
 Router.map(function() {
     this.route('tables', {
         path: '/',
@@ -191,7 +201,8 @@ Router.map(function() {
                 {sort: {created: -1}}
                 );
             var order = Orders.findOne(this.params._id);
-            return { order: order, table: Tables.findOne(order.table_id), 
+            var table = order ? Tables.findOne(order.table_id) : null;
+            return { order: order, table: table, 
                 items: items, ordered: orderedItems, menu: Menus.findOne(),
             };
             }
@@ -219,10 +230,13 @@ Router.map(function() {
     this.route('stats', {
         path: '/stats',
         waitOn: function() {
+            Meteor.subscribe('bestItems','yfbXvxDPB9g5hLeA8');
             return Meteor.subscribe('orderedItems', null);
         },
         data: function() {
-            return { items: OrderedItems.find({printed: null}) };
+            var items = BestItems.find({},{sort:{renevue:-1}});
+            return { items: OrderedItems.find({printed: null}), 
+                bestItems: items };
         }
     })
 

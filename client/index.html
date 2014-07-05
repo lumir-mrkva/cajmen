@@ -258,9 +258,17 @@
 </template>
 
 <template name="stats">
-{{#each items}}
-<div class="row">
-    {{_id}}
-</div>
-{{/each}}
+    <div class="row">
+        <h3 class="small-12 columns">Stats</h3>
+    </div>
+    <div class="row">
+        <div class="small-12 medium-6 columns">
+            <p>Total renevue: {{totalRenevue}}</p>
+            <table>
+                {{#each bestItems}}
+                <tr><td>{{item.name}}</td><td>{{count}}</td><td>{{renevue}}</td></tr> 
+                {{/each}}
+            </table>
+        </div>
+    </div>
 </template>
