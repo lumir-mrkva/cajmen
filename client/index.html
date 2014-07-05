@@ -214,16 +214,23 @@
     </div>  
     {{/each}}
     <div id="additem" class="row">
-        <div class="small-7 columns"><input type="text" id="name" placeholder="name" /></div>
-        <div class="small-3 columns">
+        <div class="small-7 columns">
             <div class="row collapse">
-                <div class="small-9 columns">
-                    <input type="number" id="price" />
+                <div class="small-11 columns">
+                    <input type="text" id="name" placeholder="name" />
                 </div>
-                <div class="small-3 columns">
-                    <span class="postfix">{{menu.currency}}</span>
+                <div class="small-1 columns">
+                	<div id="colorPicker">
+						<a class="color"><div class="colorInner"></div></a>
+						<div class="track"></div>
+						<ul class="dropdown"><li></li></ul>
+						<input type="hidden" class="colorInput"/>
+					</div>
                 </div>
             </div>
+		</div>
+        <div class="small-3 columns">
+            <input type="number" id="price" />
         </div>
         <div class="small-2 columns">
             <button class="button postfix success" id="add"><i class="fi-plus"></i></button>

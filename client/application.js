@@ -50,6 +50,10 @@ Template.item.events = {
     }
 }
 
+Template.items.rendered = function() {
+    $('#colorPicker').tinycolorpicker();
+}
+
 // Table
 Template.table.events = {
     'click #new': function(){newOrder(this.table)}, 
