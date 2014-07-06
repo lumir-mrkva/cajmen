@@ -24,6 +24,7 @@ Router.route('table', {
     waitOn: function() {
         Meteor.subscribe('menus');
         Meteor.subscribe('orders');
+        Meteor.subscribe('tables');
     },
     data: function() {
         return { 
