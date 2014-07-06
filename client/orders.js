@@ -2,6 +2,7 @@ Router.route('order', {
     path: '/order/:_id',
     waitOn: function() {
         Meteor.subscribe('menus');
+        Meteor.subscribe('items');
         Meteor.subscribe('orders');
         Meteor.subscribe('orderedItems', this.params._id);
         Meteor.subscribe('tables');
@@ -20,7 +21,7 @@ Router.route('order', {
             table: table, 
             items: items, 
             ordered: orderedItems, 
-            menu: Menus.findOne(),
+            menu: Menus.findOne()
         };
     }
 });

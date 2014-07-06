@@ -10,7 +10,7 @@ Router.route('items', {
         return {
             menu: menu,
             items: Items.find({}, {sort:{color:-1}})
-        }
+        };
     }
 });
 
