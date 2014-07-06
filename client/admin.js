@@ -26,15 +26,17 @@ Router.map(function() {
 
 Template.admin.events = {
     'click #addTable': function() {
-        Tables.insert({name: $('#table').val()});
+        var color = $('#colorPicker .colorInput').val();
+        Tables.insert({ 
+            name: $('#table').val(), 
+            color: color
+        });
     }
 };
 
-Meteor.methods({
-    printOrder: function(order) {
-        order.printed = true;
-    }
-});
+Template.admin.rendered = function() {
+    $('#colorPicker').tinycolorpicker();
+};
 
 Template.stats.totalRenevue = function() {
     var sum = 0;

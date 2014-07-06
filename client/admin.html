@@ -19,7 +19,8 @@
 		<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
 		{{#each tables}}
 			<li>
-				<a class="button" href="{{pathFor 'table'}}">{{name}}</a>
+				<a class="button" style="background-color: {{color}}" 
+					href="{{pathFor 'table'}}">{{name}}</a>
 			</li>
 		{{/each}}
 		</ul>
@@ -28,7 +29,19 @@
 
 <div class="row">
 	<div id="createtable" class="small-8 columns">
-			<input type="text" id="table" placeholder="new table name" />
+		<div class="row collapse">
+			<div class="small-11 columns">
+				<input type="text" id="table" placeholder="new table name" />
+			</div>
+			<div class="small-1 columns">
+		    	<div id="colorPicker">
+					<a class="color"><div class="colorInner"></div></a>
+					<div class="track"></div>
+					<ul class="dropdown"><li></li></ul>
+					<input type="hidden" class="colorInput"/>
+				</div>
+		    </div>
+	    </div>	
 	</div>
 	<div class="small-4 columns">
 			<a class="button secondary postfix" id="addTable">Add table</a>
