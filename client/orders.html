@@ -1,0 +1,87 @@
+<template name="order">
+    <div class="row">
+        <h3 class="small-6 columns">
+            Order {{order.number}}
+        </h3>
+        <h3 class="small-6 columns text-right">
+            Table {{table.name}}
+        </h3>
+    </div>
+    {{#unless order.printed}}
+        {{#each items}}
+             <div class="row panel" style="background-color: {{color}};">
+                <div class="small-8 columns">{{name}}</div>
+                <div class="small-2 columns text-right">{{price}}</div>
+                <div class="small-2 columns">
+                    <button id="add" class="button success postfix">
+                        <i class="fi-plus"></i>
+                    </button>
+                </div>
+             </div>
+        {{/each}}
+    {{/unless}}
+    <hr/>
+    <div class="row">
+        <div class="small-8 columns"><h4>Total</h4></div>
+        <div class="small-4 columns text-right"><h4>{{sum}} {{order.currency}}</h4></div>
+    </div>
+    {{#each ordered}}
+         <div class="row panel" style="background-color: {{color}};">
+            <div class="small-8 columns">{{item.name}}
+                {{#if item.flavours}}
+                <small>
+                {{#each item.flavours}} - {{.}}{{/each}}
+                </small>
+                {{/if}}
+            </div>
+            <div class="small-2 columns text-right">{{item.price}}</div>
+            <div class="small-2 columns">
+                {{#if printed}}
+                    <button id="disabled" class="button disabled sucess postfix">
+                        <i class="fi-print"></i>
+                    </button>
+                {{else}}
+                    <button id="remove" class="button alert postfix">
+                        <i class="fi-minus"></i>
+                    </button>
+                {{/if}}
+            </div>
+         </div>
+    {{/each}}
+    <div class="row panel" >
+        {{#if order.printed}}
+        <div class="small-6 columns">
+            <button id="ok" class="button">OK</button>
+        </div>
+        {{else}}
+        <div class="small-6 columns">
+            <button id="print" class="button" disabled={{order.printed}}>Print</button>
+        </div>
+        <div class="small-6 columns text-right">
+            <button id="removeOrder" class="button">Cancel</button>
+        </div>
+        {{/if}}
+    </div>
+</template>
+
+
+<template name="flavours">
+    <div class="row">
+        <h3 class="small-12 columns">
+            Order {{order.number}}
+        </h3>
+        <h4 class="small-12 columns">choose flavours of {{item.item.name}}</h4>
+    </div>
+    <div class="row">
+        {{#each item.item.flavours}}
+            <div class="small-12 columns" >
+                <label><input type="checkbox" value="{{.}}"> {{.}}</label>
+            </div>  
+        {{/each}}
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+            <button id="ok" class="button">OK</button>
+        </div>
+    </div>
+</template>
