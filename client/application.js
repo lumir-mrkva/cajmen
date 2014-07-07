@@ -1,3 +1,4 @@
+Settings = new Meteor.Collection('settings');
 Tables = new Meteor.Collection("tables");
 Orders = new Meteor.Collection("orders");
 Items = new Meteor.Collection('items');

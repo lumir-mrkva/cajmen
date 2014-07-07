@@ -22,6 +22,15 @@ Router.map(function() {
             };
         }
     });
+    this.route('settings', {
+        path: '/settings',
+        waitOn: function() {
+            Meteor.subscribe('settings');
+        },
+        data: function() {
+            return Settings.findOne();
+        }
+    });
 });
 
 Template.admin.events = {
@@ -45,3 +54,14 @@ Template.stats.totalRenevue = function() {
     });
     return sum;
 };
+
+Template.settings.events = {
+    'click #save' : function saveSettings() {
+        var settings = Settings.findOne();
+        var orderCount = $('#orderCount').val();
+        if (Settings.orderCount !== orderCount) {
+            Settings.update(settings._id, {$set : {orderCount: orderCount}});
+        }
+        Router.go('admin');
+    }
+}

@@ -1,26 +1,32 @@
+Settings = new Meteor.Collection('settings');
+
+Meteor.publish('settings', function() {
+    return Settings.find();
+})
+
 // Tables
 Tables = new Meteor.Collection('tables');
 
-// Publish complete set of lists to all clients.
 Meteor.publish('tables', function () {
   return Tables.find();
 });
 
-
 // Orders
 Orders = new Meteor.Collection('orders');
 
-Orders.counter = 0;
-
 Orders.allow({
-      insert: function(userId, doc) {   
-         doc.created = new Date().valueOf();   
-         doc.number = ++Orders.counter;
-         return true; 
-      },
-      remove: function() {
-          return true;
-      }}); 
+    insert: function(userId, doc) {  
+        var settings = Settings.findOne();
+        var orderCount = settings.orderCount;
+        doc.created = new Date().valueOf();   
+        doc.number = ++orderCount;
+        Settings.update(settings._id, {$set : {orderCount: orderCount}});
+        return true; 
+    },
+    remove: function() {
+        return true;
+    }
+}); 
 
 Meteor.publish('orders', function () {
   return Orders.find({});
@@ -44,16 +50,17 @@ Meteor.publish('items', function () {
 OrderedItems = new Meteor.Collection('orderedItems');
 
 OrderedItems.allow({
-      insert: function(userId, doc) {   
-         doc.created = new Date().valueOf();   
-         return true; 
-      },
-      update: function() {
-          return true;
-      },
-      remove: function() {
-          return true;
-      }}); 
+    insert: function(userId, doc) {   
+     doc.created = new Date().valueOf();   
+     return true; 
+    },
+    update: function() {
+      return true;
+    },
+    remove: function() {
+      return true;
+    }
+});  
 
 Meteor.publish('orderedItems', function(order_id) {
     if (order_id) {
@@ -72,18 +79,18 @@ Meteor.publish('bestItems', function(table){
     sort.sort(function(a,b) {return b[1]-a[1]});
     sort.forEach(function(i) {
         var id = i[0];
-        var item = Items.findOne(id);
-        self.added('bestItems', id, {item: item, count: i[1], renevue: i[1]*item.price} );
+        var item = OrderedItems.findOne({ "item._id" : id });
+        self.added('bestItems', id, {item: item.item, count: i[1], renevue: i[1]*item.item.price} );
     });
     this.ready();
 });
 
 Meteor.methods({
     printOrder: function(order) {
-        Orders.update(order._id, {$set: {printed: true}});
         var items = OrderedItems.find({order_id: order._id});
         var table = Tables.findOne(order.table_id);
         var total = 0;
+        var currency = null;
         var pb = new PrintBuilder;
         pb.addLn('order #' + order.number,  order._id );
         pb.addLn('table ' + table.name, moment(order.created).format('d.M.YYYY H:mm:ss'));
@@ -100,11 +107,19 @@ Meteor.methods({
             }
             pb.addLn(item.item.name + fl, ' ' + item.item.price + ',-');
             total = total + parseFloat(item.item.price);
+            currency = item.item.currency;
         });
         pb.hr();
-        pb.addLn('total sum', total + ',-');
+        pb.addLn('total sum', total + ',- ' + currency);
         var s = pb.build();
         console.log(s);
         Star.print(s, true);
+        Orders.update(order._id, {$set: {printed: true}});
+    }, 
+    getSettings: function() {
+      return { orderNum: Orders.counter };
+    },
+    setSettings: function(settings) {
+      Orders.counter = settings.orderNum;
     }
 });
