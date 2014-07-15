@@ -55,7 +55,7 @@
         </div>
         {{else}}
         <div class="small-6 columns">
-            <button id="print" class="button" disabled={{order.printed}}>Print</button>
+            <button id="print" class="button" disabled={{printable}}>Print</button>
         </div>
         <div class="small-6 columns text-right">
             <button id="removeOrder" class="button">Cancel</button>
@@ -84,4 +84,51 @@
             <button id="ok" class="button">OK</button>
         </div>
     </div>
+</template>
+
+
+<template name="orders">
+    <div class="row">
+        <h3 class="small-12 columns">
+            Orders
+            {{#if filters}}
+            <button class="button right small secondary" id="clearFilters">
+                clear filters
+            </button>
+            {{/if}}
+        </h3>
+        <div class="small-12 columns">
+        <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+            {{#each .}}
+                {{#if items.count}}
+                {{#if table}}
+                    <li>
+                        <span class="title left">{{number}}</span>
+                        <span class="title table-name right"
+                        style="background: {{table.color}}">{{table.name}}</span>
+                        <div class="panel order callout" 
+                        style="border-color: {{table.color}}">
+                        <div class="item row collapse"> </div>
+                        {{#each items}}
+                            <div class="item row collapse"
+                            style="background-color: {{item.color}}">
+                                {{item.name}}
+                                {{#if item.flavours}}
+                                <small> 
+                                    {{#each item.flavours}}
+                                        - {{.}}
+                                    {{/each}}
+                                </small>
+                                {{/if}}
+                            </div>
+                        {{/each}}
+                        </div>
+                    </li>
+                {{/if}}
+                {{/if}}
+            {{/each}}
+        </ul>
+  </div>
+    </div>  
+
 </template>

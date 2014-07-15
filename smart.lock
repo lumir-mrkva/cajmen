@@ -2,13 +2,25 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "iron-router": {}
+      "iron-router": {},
+      "publish-with-relations": {},
+      "collection-helpers": {}
     },
     "packages": {
       "iron-router": {
         "git": "https://github.com/EventedMind/iron-router.git",
         "tag": "v0.7.1",
         "commit": "d1ffb3f06ea4c112132b030f2eb1a70b81675ecb"
+      },
+      "publish-with-relations": {
+        "git": "https://github.com/erundook/meteor-publish-with-relations.git",
+        "tag": "v0.1.5",
+        "commit": "98213e9f056b139597c99fb9ec2884ae6be76d91"
+      },
+      "collection-helpers": {
+        "git": "https://github.com/dburles/meteor-collection-helpers.git",
+        "tag": "v0.2.9",
+        "commit": "912be6d15a59b9ee4519bf73000be70dd141b655"
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",

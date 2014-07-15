@@ -39,6 +39,7 @@ Template.order.events = {
     'click #print': function printOrder(e, template) {
         if (this.order.printed) return;
         var printItems = OrderedItems.find({order_id: this.order._id, printed: {$ne: true}});
+        if (printItems.count() == 0) return;
         printItems.forEach(function (item) {
              OrderedItems.update(item._id, {$set: {printed: true}});
         });
@@ -81,3 +82,37 @@ Template.order.sum = function() {
     });
     return sum;
 };
+
+Router.route('orders', {
+    path: '/order/',
+    waitOn: function() {
+        Meteor.subscribe('orders');
+        Meteor.subscribe('orderedItems', null);
+        Meteor.subscribe('tables');
+    },
+    data: function() {
+        return Orders.find({printed: true}, {sort: {created: -1}, limit: 20});
+    }
+});
+
+Template.orders.filters = function() {
+    var filters = {tables: Session.get('table_filter'), 
+    items: Session.get('item_filter')};
+    if (filters.items || filters.tables) return filters;
+}
+
+Template.orders.events = {
+    'click #clearFilters': function clearFilters() {
+        Session.set('table_filter',null);
+        Session.set('item_filter',null);
+    },
+    'click .table-name': function filterTables() {
+        Session.set('table_filter', this.table().color);
+    },
+    'click .item': function filterTables() {
+        Session.set('item_filter',this.item.color);
+    },
+    'click .title.left': function order() {
+        Router.go('order',{_id: this._id});
+    }
+}

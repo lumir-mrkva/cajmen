@@ -70,6 +70,18 @@ Meteor.publish('orderedItems', function(order_id) {
     }   
 });
 
+Meteor.publish('recentOrders', function() {
+    Meteor.publishWithRelations({
+        handle: this,
+        collection: Orders,
+        mappings: [{
+            reverse: false,
+            key: 'table_id',
+            collection: Tables
+        }]
+    });
+});
+
 Meteor.publish('bestItems', function(table){
     var self = this;
     var items = OrderedItems.find({printed: true}).fetch();
@@ -115,6 +127,43 @@ Meteor.methods({
         console.log(s);
         Star.print(s, true);
         Orders.update(order._id, {$set: {printed: true}});
+    }, 
+    printBill: function(order) {
+        var items = OrderedItems.find({order_id: order._id});
+        var table = Tables.findOne(order.table_id);
+        var menu = Menus.findOne();
+        var total = 0;
+        var currency = null;
+        var pb = new PrintBuilder;
+        pb.addLn('Tea House s.r.o.');
+        pb.addLn('Hluboká 64');
+        pb.addLn('738 01 Frýdek-Místek');
+        pb.addLn('IČ: 28630408   DIČ: CZ28630408');
+        pb.hr();
+        pb.hr();
+        pb.addLn('Účtenka č.: ' + order.number, 'Datum: ' + moment(order.created).format('d.M.YYYY'))
+        pb.addLn('Stůl: ' + table.name, 'Čas: ' + moment(order.created).format('H:mm:ss'))
+        pb.hr();
+        pb.addLn('Název', 'Cena');
+        pb.hr()
+        items.forEach(function(item){
+            pb.addLn(item.item.name, ' ' + item.item.price + ',-');
+            total = total + parseFloat(item.item.price);
+            currency = item.item.currency;
+        });
+        pb.hr();
+        pb.addLn('Hotovost:', total + ',- ' + currency);
+        pb.hr();
+        pb.addLn('Sazba DPH: ' + menu.vat + '%');
+        var vat = total * menu.vat/100;
+        pb.addLn('DPH: ' + vat + '   Základ: ' + (total - vat) + '   Obrat: ' + total);
+        pb.addLn('');
+        pb.addLn('DĚKUJEME ZA VÁŠ NÁKUP');
+        pb.addLn('www.dobracajovnafm.cz');
+
+        var s = pb.build();
+        console.log(s);
+        Star.print(s, true);
     }, 
     getSettings: function() {
       return { orderNum: Orders.counter };

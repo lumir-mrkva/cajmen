@@ -46,7 +46,10 @@ Template.table.events = {
     },
     'click #removeOrder': function removeOrder() {
         if(confirm('Really remove order ' + this._id + '?')) Orders.remove(this._id);
-    }
+    },
+    'click #print': function printOrder() {
+        Meteor.call('printBill', this);
+    },
 };
 
 function newOrder(table, menu) {

@@ -5,6 +5,7 @@ Items = new Meteor.Collection('items');
 OrderedItems = new Meteor.Collection('orderedItems');
 Menus = new Meteor.Collection('menus');
 BestItems = new Meteor.Collection('bestItems');
+RecentOrders = new Meteor.Collection('recentOrders');
 
 Meteor.methods({
     printOrder: function(order) {

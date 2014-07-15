@@ -2,7 +2,7 @@
 <div class="row">
   <h3 class="small-12 columns">Cajmen</h3>
   <div class="small-12 columns">
-    <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+    <ul class="small-block-grid-3 medium-block-grid-4 large-block-grid-5">
         {{#each tables}}
             <li><a style="background-color: {{color}}" class="button" id="order">{{name}}</a></li>
         {{/each}}
@@ -23,19 +23,24 @@
             {{#each orders}}
                 <tr>
                     <td>
-                        <a href="{{pathFor 'order'}}"><code>{{_id}}</code></a>
+                        <a href="{{pathFor 'order'}}"><div>{{number}}</div></a>
                     </td>
                     <td>
+                    {{#if created}}
+                        {{moment created}}
+                    {{/if}}
+                    </td>
+                    <td class="small-2">
                         {{#if printed}}
-                            <span class="label">printed</span>
-                        {{else}}
-                            <span class="success label">opened</span>
+                        <button id="print" class="button postfix">
+                            <i class="fi-print"></i>
+                        </button>
                         {{/if}}
                     </td>
-                    <td>{{#if created}}{{moment created}}{{/if}}</td>
-                    <td class="small-1">
+                    <td class="small-2">
                         <button id="removeOrder" class="button alert tiny
                             postfix"><i class="fi-x"></i></button>
+
                     </td>
                 </tr>
             {{/each}}

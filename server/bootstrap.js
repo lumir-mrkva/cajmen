@@ -29,4 +29,7 @@ Meteor.startup(function () {
     settings.menu_id = Menus.findOne()._id;
     Settings.insert(settings);
   }
+  Tables.update({color: null}, {$set:{color: '#008cba'}}, {multi: true});
+  Items.update({color: null}, {$set:{color: '#ffffff'}}, {multi: true});
+  OrderedItems.update({"item.color": null}, {$set:{"item.color": '#ffffff'}}, {multi: true});
 });
