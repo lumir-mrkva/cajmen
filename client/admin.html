@@ -5,10 +5,12 @@
 
 	<div class="row panel">
 		<div class="small-12 columns">
-			<a class="button secondary" href="{{pathFor 'items'}}">Items</a>
-			<a class="button secondary" href="{{pathFor 'orders'}}">Orders</a>
-			<a class="button secondary" href="{{pathFor 'stats'}}">Stats</a>
-			<a class="button secondary" href="{{pathFor 'settings'}}">Settings</a>
+			<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+				<li><a class="button secondary" href="{{pathFor 'items'}}">Items</a></li>
+				<li><a class="button secondary" href="{{pathFor 'orders'}}">Orders</a></li>
+				<li><a class="button secondary" href="{{pathFor 'stats'}}">Stats</a></li>
+				<li><a class="button secondary" href="{{pathFor 'settings'}}">Settings</a></li>
+			</ul>	
 		</div>
 	</div>
 
@@ -18,7 +20,7 @@
 
 	<div class="row">
 		<div class="small-12 columns">
-			<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+			<ul class="small-block-grid-3 medium-block-grid-4 large-block-grid-5">
 			{{#each tables}}
 				<li>
 					<a class="button" style="background-color: {{color}}" 
