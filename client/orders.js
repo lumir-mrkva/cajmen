@@ -91,7 +91,7 @@ Router.route('orders', {
         Meteor.subscribe('tables');
     },
     data: function() {
-        return Orders.find({printed: true}, {sort: {created: -1}, limit: 20});
+        return Orders.find({printed: true}, {sort: {created: -1}, limit: 32});
     }
 });
 
