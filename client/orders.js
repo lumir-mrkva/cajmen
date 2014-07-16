@@ -99,20 +99,29 @@ Template.orders.filters = function() {
     var filters = {tables: Session.get('table_filter'), 
     items: Session.get('item_filter')};
     if (filters.items || filters.tables) return filters;
-}
+};
 
 Template.orders.events = {
     'click #clearFilters': function clearFilters() {
         Session.set('table_filter',null);
         Session.set('item_filter',null);
     },
-    'click .table-name': function filterTables() {
-        Session.set('table_filter', this.table().color);
-    },
-    'click .item': function filterTables() {
-        Session.set('item_filter',this.item.color);
-    },
-    'click .title.left': function order() {
-        Router.go('order',{_id: this._id});
-    }
-}
+    'click .table-name': filterTables,
+    'tap .table-name': filterTables,
+    'click .item': filterItems,
+    'tap .item': filterItems,
+    'click .title.left': order,
+    'tap .title.left': order
+};
+
+function filterTables() {
+    Session.set('table_filter', this.table().color);
+};
+
+function filterItems() {
+    Session.set('item_filter',this.item.color);
+};
+
+function order() {
+    Router.go('order',{_id: this._id});
+};
