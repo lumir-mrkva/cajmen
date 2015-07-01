@@ -6,22 +6,24 @@ Router.route('order', {
         Meteor.subscribe('orders');
         Meteor.subscribe('orderedItems', this.params._id);
         Meteor.subscribe('tables');
+        Meteor.subscribe('settings');
     },
     data: function() {
         var items = Items.find({}, {sort:{color:-1}});
         var orderedItems = OrderedItems.find(
-            {order_id: this.params._id}, 
+            {order_id: this.params._id},
             {sort: {created: -1}}
         );
         var order = Orders.findOne(this.params._id);
         var table = order ? Tables.findOne(order.table_id) : null;
 
-        return { 
-            order: order, 
-            table: table, 
-            items: items, 
-            ordered: orderedItems, 
-            menu: Menus.findOne()
+        return {
+            order: order,
+            table: table,
+            items: items,
+            ordered: orderedItems,
+            menu: Menus.findOne(),
+            settings: Settings.findOne()
         };
     }
 });
@@ -34,7 +36,7 @@ Template.order.events = {
         }
     },
     'click #remove': function removeItem() {
-        OrderedItems.remove(this._id); 
+        OrderedItems.remove(this._id);
     },
     'click #print': function printOrder(e, template) {
         if (this.order.printed) return;
@@ -44,6 +46,9 @@ Template.order.events = {
              OrderedItems.update(item._id, {$set: {printed: true}});
         });
         Meteor.call('printOrder', this.order);
+        if (template.data.settings.printBill) {
+          Meteor.call('printBill', this.order);
+        }
         console.log(printItems);
     },
     'click #removeOrder': function removeOrder() {
@@ -62,7 +67,7 @@ Router.route('flavours', {
         Meteor.subscribe('orderedItems', this.params.order);
     },
     data: function() {
-        return { item: OrderedItems.findOne(this.params._id), 
+        return { item: OrderedItems.findOne(this.params._id),
             order: Orders.findOne(this.params.order) };
     }
 });
@@ -96,7 +101,7 @@ Router.route('orders', {
 });
 
 Template.orders.filters = function() {
-    var filters = {tables: Session.get('table_filter'), 
+    var filters = {tables: Session.get('table_filter'),
     items: Session.get('item_filter')};
     if (filters.items || filters.tables) return filters;
 };

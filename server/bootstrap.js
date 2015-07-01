@@ -2,7 +2,7 @@
 
 var tables = 6;
 var menu = [ "Kc", 21 ];
-var items = [ 
+var items = [
     [ "dymka", 121 ],
     [ "ryze", 50 ],
     [ "caj caj caj", 70 ],
@@ -10,7 +10,7 @@ var items = [
     [ "masala", 60 ]
 ];
 
-var settings = { orderCount: 1 };
+var settings = { orderCount: 1, printEnabled: true, printBill: false };
 
 Meteor.startup(function () {
   if (Tables.find().count() === 0) {
@@ -19,12 +19,12 @@ Meteor.startup(function () {
     }
   }
   if (Menus.find().count() === 0) {
-    var menu_id = Menus.insert({vat: menu[1], currency: menu[0]}); 
+    var menu_id = Menus.insert({vat: menu[1], currency: menu[0]});
     for (var i = 0; i < items.length; i++) {
         Items.insert({name: items[i][0], price: items[i][1], currency: menu[0],
             menu_id: menu_id });
     }
-  } 
+  }
   if (Settings.find().count() === 0) {
     settings.menu_id = Menus.findOne()._id;
     Settings.insert(settings);

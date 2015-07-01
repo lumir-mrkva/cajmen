@@ -16,9 +16,9 @@ Router.map(function() {
         },
         data: function() {
             var items = BestItems.find({},{sort:{renevue:-1}});
-            return { 
-                items: OrderedItems.find({printed: null}), 
-                bestItems: items 
+            return {
+                items: OrderedItems.find({printed: null}),
+                bestItems: items
             };
         }
     });
@@ -36,8 +36,8 @@ Router.map(function() {
 Template.admin.events = {
     'click #addTable': function() {
         var color = $('#colorPicker .colorInput').val();
-        Tables.insert({ 
-            name: $('#table').val(), 
+        Tables.insert({
+            name: $('#table').val(),
             color: color
         });
     }
@@ -62,6 +62,8 @@ Template.settings.events = {
         if (Settings.orderCount !== orderCount) {
             Settings.update(settings._id, {$set : {orderCount: orderCount}});
         }
+        Settings.update(settings._id, {$set: {printEnabled: $('#print').is(':checked')}});
+        Settings.update(settings._id, {$set: {printBill: $('#printBill').is(':checked')}});
         Router.go('admin');
     }
 }

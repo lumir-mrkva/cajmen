@@ -15,18 +15,18 @@ Meteor.publish('tables', function () {
 Orders = new Meteor.Collection('orders');
 
 Orders.allow({
-    insert: function(userId, doc) {  
+    insert: function(userId, doc) {
         var settings = Settings.findOne();
         var orderCount = settings.orderCount;
-        doc.created = new Date().valueOf();   
+        doc.created = new Date().valueOf();
         doc.number = ++orderCount;
         Settings.update(settings._id, {$set : {orderCount: orderCount}});
-        return true; 
+        return true;
     },
     remove: function() {
         return true;
     }
-}); 
+});
 
 Meteor.publish('orders', function () {
   return Orders.find({});
@@ -50,9 +50,9 @@ Meteor.publish('items', function () {
 OrderedItems = new Meteor.Collection('orderedItems');
 
 OrderedItems.allow({
-    insert: function(userId, doc) {   
-     doc.created = new Date().valueOf();   
-     return true; 
+    insert: function(userId, doc) {
+     doc.created = new Date().valueOf();
+     return true;
     },
     update: function() {
       return true;
@@ -60,14 +60,14 @@ OrderedItems.allow({
     remove: function() {
       return true;
     }
-});  
+});
 
 Meteor.publish('orderedItems', function(order_id) {
     if (order_id) {
         return OrderedItems.find({order_id: order_id});
     } else {
         return OrderedItems.find({});
-    }   
+    }
 });
 
 Meteor.publish('recentOrders', function() {
@@ -101,8 +101,10 @@ Meteor.methods({
     printOrder: function(order) {
         var items = OrderedItems.find({order_id: order._id});
         var table = Tables.findOne(order.table_id);
+        var menu = Menus.findOne();
+        var settings = Settings.findOne();
         var total = 0;
-        var currency = null;
+        var currency = menu.currency;
         var pb = new PrintBuilder;
         pb.addLn('order #' + order.number,  order._id );
         pb.addLn('table ' + table.name, moment(order.created).format('d.M.YYYY H:mm:ss'));
@@ -113,27 +115,30 @@ Meteor.methods({
             if (flavours) {
                 fl = ' - ';
                 flavours.forEach(function(flavour) {
-                    fl = fl + flavour + ',';        
+                    fl = fl + flavour + ',';
                 });
                 fl = fl.slice(0, -1);
             }
-            pb.addLn(item.item.name + fl, ' ' + item.item.price + ',-');
+            pb.addLn(item.item.name + fl, ' ' + formatPrice(item.item.price));
             total = total + parseFloat(item.item.price);
-            currency = item.item.currency;
         });
         pb.hr();
-        pb.addLn('total sum', total + ',- ' + currency);
+        pb.addLn('total sum', formatPrice(total) + ' ' + currency);
         var s = pb.build();
         console.log(s);
-        Star.print(s, true);
+        if (settings.printEnabled) {
+          Star.print(s, true);
+        }
         Orders.update(order._id, {$set: {printed: true}});
-    }, 
+    },
     printBill: function(order) {
         var items = OrderedItems.find({order_id: order._id});
         var table = Tables.findOne(order.table_id);
         var menu = Menus.findOne();
+        var settings = Settings.findOne();
+
         var total = 0;
-        var currency = null;
+        var currency = menu.currency;
         var pb = new PrintBuilder;
         pb.addLn('Tea House s.r.o.');
         pb.addLn('Hluboká 64');
@@ -147,12 +152,11 @@ Meteor.methods({
         pb.addLn('Název', 'Cena');
         pb.hr()
         items.forEach(function(item){
-            pb.addLn(item.item.name, ' ' + item.item.price + ',-');
+            pb.addLn(item.item.name, ' ' + formatPrice(item.item.price));
             total = total + parseFloat(item.item.price);
-            currency = item.item.currency;
         });
         pb.hr();
-        pb.addLn('Hotovost:', total + ',- ' + currency);
+        pb.addLn('Hotovost:', formatPrice(total) + ' ' + currency);
         pb.hr();
         pb.addLn('Sazba DPH: ' + menu.vat + '%');
         var vat = total * menu.vat/100;
@@ -163,8 +167,10 @@ Meteor.methods({
 
         var s = pb.build();
         console.log(s);
-        Star.print(s, true);
-    }, 
+        if (settings.printEnabled) {
+          Star.print(s, true);
+        }
+    },
     getSettings: function() {
       return { orderNum: Orders.counter };
     },
@@ -172,3 +178,11 @@ Meteor.methods({
       Orders.counter = settings.orderNum;
     }
 });
+
+function formatPrice(n) {
+  if (n % 1 === 0) {
+    return n + ',- ';
+  } else {
+    return (n + '0').replace('.', ',');
+  }
+}
