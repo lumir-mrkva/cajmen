@@ -96,7 +96,11 @@ Router.route('orders', {
         Meteor.subscribe('tables');
     },
     data: function() {
-        return Orders.find({printed: true}, {sort: {created: -1}, limit: 32});
+        var filter = {printed: true};
+        if (!Session.get('show_served')) {
+          filter['served'] = {$exists: false};
+        }
+        return Orders.find(filter, {sort: {created: -1}, limit: 32});
     }
 });
 
@@ -106,17 +110,26 @@ Template.orders.filters = function() {
     if (filters.items || filters.tables) return filters;
 };
 
+Template.orders.showServed = function() {
+  return Session.get('show_served');
+}
+
 Template.orders.events = {
     'click #clearFilters': function clearFilters() {
         Session.set('table_filter',null);
         Session.set('item_filter',null);
+    },
+    'click #toggleServed': function toggleServed() {
+        Session.set('show_served', !Session.get('show_served'));
     },
     'click .table-name': filterTables,
     'tap .table-name': filterTables,
     'click .item': filterItems,
     'tap .item': filterItems,
     'click .title.left': order,
-    'tap .title.left': order
+    'tap .title.left': order,
+    'click .title.serve': serveOrder,
+    'tap .title.serve': serveOrder
 };
 
 function filterTables() {
@@ -130,3 +143,7 @@ function filterItems() {
 function order() {
     Router.go('order',{_id: this._id});
 };
+
+function serveOrder() {
+  Meteor.call('serveOrder', {_id: this._id});
+}

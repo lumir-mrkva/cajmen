@@ -76,7 +76,7 @@
         {{#each item.item.flavours}}
             <div class="small-12 columns" >
                 <label><input type="checkbox" value="{{.}}"> {{.}}</label>
-            </div>  
+            </div>
         {{/each}}
     </div>
     <div class="row">
@@ -94,8 +94,11 @@
             {{#if filters}}
             <button class="button right small secondary" id="clearFilters">
                 clear filters
-            </button>
+            </button> 
             {{/if}}
+            <button class="button right small secondary" id="toggleServed">
+                {{#if showServed}}hide{{else}}show{{/if}} served
+            </button>
         </h3>
         <div class="small-12 columns">
         <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
@@ -106,7 +109,7 @@
                         <span class="title left">{{number}}</span>
                         <span class="title table-name right"
                         style="background: {{table.color}}">{{table.name}}</span>
-                        <div class="panel order callout" 
+                        <div class="panel order callout"
                         style="border-color: {{table.color}}">
                         <div class="item row collapse"> </div>
                         {{#each items}}
@@ -114,7 +117,7 @@
                             style="background-color: {{item.color}}">
                                 {{item.name}}
                                 {{#if item.flavours}}
-                                <small> 
+                                <small>
                                     {{#each item.flavours}}
                                         - {{.}}
                                     {{/each}}
@@ -123,12 +126,16 @@
                             </div>
                         {{/each}}
                         </div>
+                        {{#unless served}}
+                          <span class="title serve right"
+                          style="background: lightgreen">ok</span>
+                        {{/unless}}
                     </li>
                 {{/if}}
                 {{/if}}
             {{/each}}
         </ul>
   </div>
-    </div>  
+    </div>
 
 </template>

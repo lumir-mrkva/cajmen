@@ -98,6 +98,9 @@ Meteor.publish('bestItems', function(table){
 });
 
 Meteor.methods({
+    serveOrder: function(order) {
+      Orders.update(order._id, {$set: {served: new Date().valueOf()}});
+    },
     printOrder: function(order) {
         var items = OrderedItems.find({order_id: order._id});
         var table = Tables.findOne(order.table_id);

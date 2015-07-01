@@ -11,7 +11,7 @@ Orders.helpers({
 		if (Session.get('item_filter')) {
 			filter['item.color'] = Session.get('item_filter');
 		}
-		return OrderedItems.find(filter, 
+		return OrderedItems.find(filter,
 				{sort: {"item.color": -1}});
 	}
 });
