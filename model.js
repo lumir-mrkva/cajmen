@@ -10,6 +10,9 @@ Orders.helpers({
 		var filter = {order_id: this._id};
 		if (Session.get('item_filter')) {
 			filter['item.color'] = Session.get('item_filter');
+		}	
+		if (!Session.get('show_served')) {
+			filter['served'] = {$exists: false};
 		}
 		return OrderedItems.find(filter,
 				{sort: {"item.color": -1}});

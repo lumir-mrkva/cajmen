@@ -91,14 +91,14 @@
     <div class="row">
         <h3 class="small-12 columns">
             Orders
-            {{#if filters}}
-            <button class="button right small secondary" id="clearFilters">
-                clear filters
-            </button> 
-            {{/if}}
             <button class="button right small secondary" id="toggleServed">
                 {{#if showServed}}hide{{else}}show{{/if}} served
             </button>
+            {{#if filters}}
+            <button class="button right small" id="clearFilters">
+                clear filters
+            </button>
+            {{/if}}
         </h3>
         <div class="small-12 columns">
         <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
@@ -123,10 +123,16 @@
                                     {{/each}}
                                 </small>
                                 {{/if}}
+
+                                <span class="right">
+                                  {{#if served}}
+                                    <i class="fi-check"></i>
+                                  {{/if}}
+                                </span>
                             </div>
                         {{/each}}
                         </div>
-                        {{#unless served}}
+                        {{#unless allServed}}
                           <span class="title serve right"
                           style="background: lightgreen">ok</span>
                         {{/unless}}

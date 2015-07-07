@@ -97,9 +97,6 @@ Router.route('orders', {
     },
     data: function() {
         var filter = {printed: true};
-        if (!Session.get('show_served')) {
-          filter['served'] = {$exists: false};
-        }
         return Orders.find(filter, {sort: {created: -1}, limit: 32});
     }
 });
@@ -112,7 +109,18 @@ Template.orders.filters = function() {
 
 Template.orders.showServed = function() {
   return Session.get('show_served');
-}
+};
+
+Template.orders.allServed = function() {
+  var ret = true;
+  this.items().forEach(function (item) {
+    if (!item.served) {
+      ret = false;
+      return;
+    }
+  });
+  return ret;
+};
 
 Template.orders.events = {
     'click #clearFilters': function clearFilters() {
@@ -145,5 +153,7 @@ function order() {
 };
 
 function serveOrder() {
-  Meteor.call('serveOrder', {_id: this._id});
+  this.items().forEach(function (item) {
+    OrderedItems.update(item._id, {$set: {served: true}});
+  });
 }
